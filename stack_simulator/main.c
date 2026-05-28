@@ -27,6 +27,8 @@ int main(void)
     struct Stack s;
     stack_init(&s);
 
+    stack_dealloc(&s);
+
     stack_println(s);
     stack_alloc(&s, 3, 10);
     stack_alloc(&s, 1, 2);
@@ -46,6 +48,8 @@ int main(void)
 
     stack_println_full(s);
 
+    stack_alloc(&s, 20, 145);
+
     return 0;
 }
 
@@ -64,6 +68,11 @@ void stack_init(struct Stack *s)
 
 void stack_alloc(struct Stack *s, size_t bytes, uint8_t val)
 {
+    if (s->stack_ptr + bytes > STACK_BYTES) {
+        fprintf(stderr, "stack overflow!\n");
+        return;
+    }
+
     for (size_t i = 0; i < bytes; ++i) {
         s->items[s->stack_ptr++] = val;
     }
@@ -73,6 +82,11 @@ void stack_alloc(struct Stack *s, size_t bytes, uint8_t val)
 
 void stack_dealloc(struct Stack *s)
 {
+    if (s->stack_ptr == 0) {
+        fprintf(stderr, "stack underflow!\n");
+        return;
+    }
+
     s->stack_ptr -= s->ab_arr.bytes[s->ab_arr.bytes_count - 1];
     s->ab_arr.bytes_count--;
 }
@@ -87,8 +101,14 @@ void stack_println_full(struct Stack s)
 
 void stack_println(struct Stack s)
 {
+    if (s.stack_ptr == 0) {
+        printf("empty stack\n");
+        return;
+    }
+
     for (size_t i = 0; i < s.stack_ptr; ++i) {
         printf("%d ", s.items[i]);
     }
+
     printf("\n");
 }
