@@ -11,8 +11,8 @@ struct Allocated_bytes_arr {
 
 struct Stack {
     uint8_t items[STACK_BYTES];
-    uint8_t *stack_origin;
-    size_t stack_ptr;
+    uint8_t *stack_ptr;
+    size_t len;
     struct Allocated_bytes_arr ab_arr;
 };
 
@@ -61,32 +61,39 @@ void stack_init(struct Stack *s)
     }
 
     s->ab_arr.bytes_count = 0;
-
-    s->stack_origin = &s->items[0];
-    s->stack_ptr = 0;
+    s->stack_ptr = s->items;
+    s->len = 0;
 }
 
 void stack_alloc(struct Stack *s, size_t bytes, uint8_t val)
 {
-    if (s->stack_ptr + bytes > STACK_BYTES) {
+    if (s->len + bytes > STACK_BYTES) {
         fprintf(stderr, "stack overflow!\n");
         return;
     }
 
     for (size_t i = 0; i < bytes; ++i) {
-        s->items[s->stack_ptr++] = val;
+        *(s->stack_ptr) = val;
+        s->stack_ptr++;
+    }
+
+    if (s->ab_arr.bytes_count >= STACK_BYTES) {
+        fprintf(stderr, "stack overflow!\n");
+        return;
     }
 
     s->ab_arr.bytes[s->ab_arr.bytes_count++] = bytes;
+    s->len += bytes;
 }
 
 void stack_dealloc(struct Stack *s)
 {
-    if (s->stack_ptr == 0) {
+    if (s->len == 0) {
         fprintf(stderr, "stack underflow!\n");
         return;
     }
 
+    s->len -= s->ab_arr.bytes[s->ab_arr.bytes_count - 1];
     s->stack_ptr -= s->ab_arr.bytes[s->ab_arr.bytes_count - 1];
     s->ab_arr.bytes_count--;
 }
@@ -101,12 +108,12 @@ void stack_println_full(struct Stack s)
 
 void stack_println(struct Stack s)
 {
-    if (s.stack_ptr == 0) {
+    if (s.len == 0) {
         printf("empty stack\n");
         return;
     }
 
-    for (size_t i = 0; i < s.stack_ptr; ++i) {
+    for (size_t i = 0; i < s.len; ++i) {
         printf("%d ", s.items[i]);
     }
 
