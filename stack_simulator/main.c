@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define STACK_BYTES 26
 
@@ -21,36 +22,12 @@ void stack_dealloc(struct Stack *s);
 void stack_println(struct Stack *s);
 void stack_println_full(struct Stack *s);
 
+void test_stack_simulation();
+
 int main(void)
 {
-    struct Stack s;
-    struct Stack *sptr = &s;
-
-    stack_init(sptr);
-
-    stack_dealloc(sptr);
-
-    stack_println(sptr);
-    stack_alloc(sptr, 3, 10);
-    stack_alloc(sptr, 1, 2);
-    stack_alloc(sptr, 2, 255);
-    stack_alloc(sptr, 2, 23);
-    stack_alloc(sptr, 5, 145);
-    stack_alloc(sptr, 3, 45);
-    stack_println(sptr);
-
-    stack_dealloc(sptr);
-    stack_dealloc(sptr);
-    stack_println(sptr);
-    stack_println_full(sptr);
-
-    stack_alloc(sptr, 2, 255);
-    stack_println(sptr);
-    stack_println_full(sptr);
-
-    stack_alloc(sptr, 20, 145);
-
-    return 0;
+    test_stack_simulation();
+    return EXIT_SUCCESS;
 }
 
 void stack_init(struct Stack *s)
@@ -124,4 +101,34 @@ void stack_println(struct Stack *s)
     }
 
     printf("\n");
+}
+
+void test_stack_simulation()
+{
+    struct Stack s;
+    struct Stack *sptr = &s;
+
+    stack_init(sptr);
+
+    stack_dealloc(sptr);
+
+    stack_println(sptr);
+    stack_alloc(sptr, 3, 10);
+    stack_alloc(sptr, 1, 2);
+    stack_alloc(sptr, 2, 255);
+    stack_alloc(sptr, 2, 23);
+    stack_alloc(sptr, 5, 145);
+    stack_alloc(sptr, 3, 45);
+    stack_println(sptr);
+
+    stack_dealloc(sptr);
+    stack_dealloc(sptr);
+    stack_println(sptr);
+    stack_println_full(sptr);
+
+    stack_alloc(sptr, 2, 255);
+    stack_println(sptr);
+    stack_println_full(sptr);
+
+    stack_alloc(sptr, 20, 145);
 }
