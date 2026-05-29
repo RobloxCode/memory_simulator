@@ -61,12 +61,15 @@ void stack_init(struct Stack *s)
     }
 
     s->ab_arr.bytes_count = 0;
-    s->stack_ptr = s->items;
+    s->stack_ptr = s->items + STACK_BYTES - 1;
 }
 
 void stack_alloc(struct Stack *s, size_t bytes, uint8_t val)
 {
-    size_t used = (size_t)(s->stack_ptr - s->items);
+    uint8_t *start = s->items + STACK_BYTES - 1;
+    uint8_t *end = s->stack_ptr;
+    size_t used = (size_t)(start - end);
+
     if (used + bytes > STACK_BYTES) {
         fprintf(stderr, "stack overflow!\n");
         return;
@@ -74,7 +77,7 @@ void stack_alloc(struct Stack *s, size_t bytes, uint8_t val)
 
     for (size_t i = 0; i < bytes; ++i) {
         *(s->stack_ptr) = val;
-        s->stack_ptr++;
+        s->stack_ptr--;
     }
 
     if (s->ab_arr.bytes_count >= STACK_BYTES) {
@@ -93,7 +96,7 @@ void stack_dealloc(struct Stack *s)
     }
 
     size_t bytes_to_remove = s->ab_arr.bytes[s->ab_arr.bytes_count - 1];
-    s->stack_ptr -= bytes_to_remove;
+    s->stack_ptr += bytes_to_remove;
     s->ab_arr.bytes_count--;
 }
 
@@ -108,7 +111,9 @@ void stack_println_full(struct Stack *s)
 
 void stack_println(struct Stack *s)
 {
-    size_t len = (size_t)(s->stack_ptr - s->items);
+    uint8_t *start = s->items + STACK_BYTES - 1;
+    uint8_t *end = s->stack_ptr;
+    size_t len = (size_t)(start - end);
 
     if (len == 0) {
         printf("empty stack\n");
@@ -116,7 +121,8 @@ void stack_println(struct Stack *s)
     }
 
     for (size_t i = 0; i < len; ++i) {
-        printf("%d ", s->items[i]);
+        printf("%d ", *start);
+        start--;
     }
 
     printf("\n");
