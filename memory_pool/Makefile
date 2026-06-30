@@ -3,8 +3,8 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wconversion -pedantic -g \
          -fsanitize=address -fno-omit-frame-pointer
 
-SRC = main.c
-OUT = m
+SRC = pool.c
+OUT = p
 
 $(OUT): $(SRC)
 	$(CC) $(CFLAGS) $^ -o $@
