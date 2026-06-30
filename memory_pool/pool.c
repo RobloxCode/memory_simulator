@@ -5,6 +5,7 @@
 
 typedef struct {
     int *start;
+    size_t start_i;
     size_t len;
 } PoolSlice;
 
@@ -16,12 +17,19 @@ void _println_occupied();
 size_t _get_pool_start();
 
 void mymalloc(PoolSlice *dst, size_t size);
+void pool_slice_print_info(PoolSlice ps);
 
 int main(void) {
     _println_pool();
 
-    PoolSlice slice = {0};
-    mymalloc(&slice, 4);
+    PoolSlice ps = {0};
+    mymalloc(&ps, 4);
+
+    PoolSlice ps2 = {0};
+    mymalloc(&ps2, 5);
+
+    pool_slice_print_info(ps);
+    pool_slice_print_info(ps2);
 
     _println_occupied();
     _println_pool();
@@ -59,10 +67,15 @@ void _println_occupied() {
 void mymalloc(PoolSlice *dst, size_t size) {
     size_t pool_start_pos = _get_pool_start();
 
+    dst->start_i = pool_start_pos;
     dst->start = (int *)pool_start_pos;
     dst->len = size;
 
     for (size_t i = 0; i < size; ++i) {
         occupied[pool_start_pos++] = 1;
     }
+}
+
+void pool_slice_print_info(PoolSlice ps) {
+    printf("i: %zu\nlen: %zu\n", ps.start_i, ps.len);
 }
