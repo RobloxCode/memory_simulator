@@ -17,7 +17,10 @@ void _println_occupied();
 size_t _get_pool_start();
 
 void mymalloc(PoolSlice *dst, size_t size);
+void myfree(PoolSlice *ps);
 void pool_slice_print_info(PoolSlice ps);
+
+void slice_set(PoolSlice *ps, int val);
 
 int main(void) {
     _println_pool();
@@ -32,6 +35,16 @@ int main(void) {
     pool_slice_print_info(ps2);
 
     _println_occupied();
+    _println_pool();
+
+    myfree(&ps);
+
+    pool_slice_print_info(ps);
+
+    _println_occupied();
+    _println_pool();
+
+    slice_set(&ps2, 3);
     _println_pool();
 
     return 0;
@@ -76,6 +89,21 @@ void mymalloc(PoolSlice *dst, size_t size) {
     }
 }
 
+void myfree(PoolSlice *ps) {
+    for (size_t i = 0; i < ps->len; ++i) {
+        occupied[i + ps->start_i] = 0;
+    }
+    ps->start = NULL;
+    ps->len = 0;
+}
+
 void pool_slice_print_info(PoolSlice ps) {
     printf("i: %zu\nlen: %zu\n", ps.start_i, ps.len);
+}
+
+void slice_set(PoolSlice *ps, int val) {
+    size_t start_i = ps->start_i;
+    for (size_t i = 0; i < ps->len; ++i) {
+        pool[start_i++] = val;
+    }
 }
