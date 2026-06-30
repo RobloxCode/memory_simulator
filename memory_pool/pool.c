@@ -101,6 +101,7 @@ void pool_slice_print_info(PoolSlice ps) {
     printf("i: %zu\nlen: %zu\n", ps.start_i, ps.len);
 }
 
+// TODO: make this iterate and change the values through the pointer
 void slice_set(PoolSlice *ps, int val) {
     size_t start_i = ps->start_i;
     for (size_t i = 0; i < ps->len; ++i) {
