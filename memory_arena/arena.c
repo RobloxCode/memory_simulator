@@ -13,6 +13,5 @@ void *arena_malloc(Arena *a, size_t nmemb, size_t size);
 void arena_deinit(Arena **a);
 
 int main(void) {
-    puts("thue");
     return 0;
 }
