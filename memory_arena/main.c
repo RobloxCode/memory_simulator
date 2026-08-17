@@ -8,7 +8,11 @@ void *arena_xmalloc(Arena *a, size_t nmemb, size_t s);
 int main(void) {
     Arena a;
     Arena *aptr = &a;
-    arena_init(&a);
+
+    if (arena_init(aptr) != 0) {
+        fprintf(stderr, "Error initializing arena!\n");
+        return EXIT_FAILURE;
+    }
 
     size_t nums_len = 20;
     int32_t *nums = arena_xmalloc(aptr, nums_len, sizeof *nums);

@@ -4,15 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void arena_init(Arena *a) {
+int arena_init(Arena *a) {
+    int ret = 0;
     a->data = malloc(ARENA_DEF_SIZE * sizeof *a->data);
+
     if (!a->data) {
-        fprintf(stderr, "Error internal malloc!\n");
-        return;
+        ret = 1;
     }
 
     a->pos = a->data;
     a->len = 0;
+
+    return ret;
 }
 
 void arena_deinit(Arena **a) {
