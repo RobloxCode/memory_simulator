@@ -33,15 +33,18 @@ void *arena_malloc(Arena *a, size_t nmemb, size_t size) {
 
     size_t total = nmemb * size;
 
-    if (total > ARENA_DEF_SIZE - a->len) {
-        fprintf(stderr, "Not enough memory!\n");
+    uintptr_t cur = (uintptr_t)a->pos;
+    uintptr_t aligned = (cur + (ALIGN - 1)) & ~(ALIGN - 1);
+    size_t padding = aligned - cur;
+
+    if (padding + total > ARENA_DEF_SIZE - a->len) {
+        fprintf(stderr, "Not enough memory\n");
         return NULL;
     }
 
-    void *p = NULL;
-    p = a->pos;
-    a->pos += total;
-    a->len += (size_t)total;
+    void *p = (void *)aligned;
+    a->pos += padding + total;
+    a->len += padding + total;
 
     return p;
 }

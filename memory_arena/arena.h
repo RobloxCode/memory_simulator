@@ -10,6 +10,7 @@
     #define WARN_UNUSED
 #endif
 
+#define ALIGN          _Alignof(max_align_t)
 #define BYTE_SIZE      sizeof(int8_t)
 #define ARENA_DEF_SIZE 1024
 
