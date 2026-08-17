@@ -26,23 +26,22 @@ void arena_deinit(Arena **a) {
 }
 
 void *arena_malloc(Arena *a, size_t nmemb, size_t size) {
-    void *p = NULL;
-
     if (size != 0 && nmemb > SIZE_MAX / size) {
         fprintf(stderr, "Allocation size overflow!\n");
         return NULL;
     }
 
-    size_t shift_times = nmemb * size;
+    size_t total = nmemb * size;
 
-    if (shift_times > ARENA_DEF_SIZE - a->len) {
+    if (total > ARENA_DEF_SIZE - a->len) {
         fprintf(stderr, "Not enough memory!\n");
         return NULL;
     }
 
+    void *p = NULL;
     p = a->pos;
-    a->pos += shift_times;
-    a->len += (size_t)shift_times;
+    a->pos += total;
+    a->len += (size_t)total;
 
     return p;
 }
